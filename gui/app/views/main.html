@@ -1,23 +1,14 @@
 <div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
   <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
+    Betting System for:
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+  <h1 class="text-center">{{game.event}}</h1>
+  <h2>{{game.team1}} vs. {{game.team2}}</h2>
+  <div class="row">
+    <img class="team-avatar-main col-xs-6 col-sm-6" ng-src="{{game.team1img}}" alt="{{game.team1}}">
+    <img class="team-avatar-main col-xs-6 col-sm-6" ng-src="{{game.team2img}}" alt="{{game.team2}}"><br>
+  </div>
+  <h5 class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">{{game.venue}}</h5>
+  <h5 class="col-xs-12 col-sm-offset-2 col-sm-8 text-center">{{game.date}}</h5>
+  <p><a class="btn btn-lg btn-success" ng-href="#/makebet">Make a Bet <span class="glyphicon glyphicon-ok"></span></a></p>
 </div>

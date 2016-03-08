@@ -1,0 +1,9 @@
+  <game>
+    <event>Super Bowl 50</event>
+    <team1>Denver Broncos</team1>
+    <team1img>images/denver_broncos.jpg</team1img>
+    <team2>Carolina Panthers</team2>
+    <team2img>images/carolina_panthers.jpg</team2img>
+    <date>February 7, 2016</date>
+    <venue>Levi's Stadium, Sta. Clara, CA</venue>
+  </game>

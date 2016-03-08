@@ -1,0 +1,14 @@
+<bets>
+  <bet>
+    <team>1</team>
+    <amount>100</amount>
+    <winning>200</winning>
+    <controlno>1234ABCD</controlno>
+  </bet>
+  <bet>
+    <team>2</team>
+    <amount>200</amount>
+    <winning>100</winning>
+    <controlno>1234ABCE</controlno>
+  </bet>
+</bets>
