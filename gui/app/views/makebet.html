@@ -1,23 +1,15 @@
 <div class="jumbotron">
-  <h1>Make a Bet</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+  <h1>Make a Bet:</h1>
+  <form class="text-center">
+    <div class="row">
+      <label for="team1" class="col-xs-6 col-sm-offset-2 col-sm-4" >{{game.team1}}
+        <input type="radio" name="team" id="team1" ng-model="newBet.team" ng-value="1" ><img class ="team-logo" ng-src="{{game.team1img}}">
+      </label>
+      <label for="team2" class="col-xs-6 col-sm-4" >{{game.team2}}
+        <input type="radio" name="team" id="team2" ng-model="newBet.team" ng-value="2" ><img class ="team-logo" ng-src="{{game.team2img}}">
+      </label>
+    </div>
+    <input type="number" class="col-xs-6 col-sm-offset-4 col-sm-4" ng-model="newBet.betAmount" placeholder="100">
+    <button class="col-xs-6 col-sm-offset-4 col-sm-4" ng-click="submitBet()">Submit Amount</button>
+  </form>
 </div>

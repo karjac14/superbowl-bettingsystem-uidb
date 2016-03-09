@@ -1,9 +1,6 @@
 {
   "name": "bettingsystem",
   "private": true,
-  "scripts": {
-    "start": "browser-sync start --server --directory --startPath app/index.html --files='app/views/*.html, app/styles/main.css'"
-  },
   "devDependencies": {
     "autoprefixer-core": "^5.2.1",
     "grunt": "^0.4.5",

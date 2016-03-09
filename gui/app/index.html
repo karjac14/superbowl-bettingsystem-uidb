@@ -40,7 +40,7 @@
             <ul class="nav navbar-nav">
               <li class="active"><a href="#/">Home</a></li>
               <li><a ng-href="#/makebet">Make Bet</a></li>
-              <li><a ng-href="#/">Contact</a></li>
+              <li><a ng-href="#/showbets">Contact</a></li>
             </ul>
           </div>
         </div>
@@ -48,19 +48,18 @@
     </div>
 
     <div class="container">
-      lets tryS
     <div ng-view=""></div>
     </div>
 
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <p>Betting System (An Imaginary Company)</p>
       </div>
     </div>
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
+     <!-- <script>
        !function(A,n,g,u,l,a,r){A.GoogleAnalyticsObject=l,A[l]=A[l]||function(){
        (A[l].q=A[l].q||[]).push(arguments)},A[l].l=+new Date,a=n.createElement(g),
        r=n.getElementsByTagName(g)[0],a.src=u,r.parentNode.insertBefore(a,r)
@@ -68,7 +67,7 @@
 
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
-    </script>
+    </script> -->
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
@@ -83,6 +82,8 @@
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/makebet.js"></script>
+        <script src="scripts/controllers/showbets.js"></script>
+        <script src="scripts/services/base_url.js"></script>
         <!-- endbuild -->
 </body>
 </html>

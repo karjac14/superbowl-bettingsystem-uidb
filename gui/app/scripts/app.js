@@ -24,6 +24,11 @@ angular
         controller: 'MakebetCtrl',
         controllerAs: 'makebet'
       })
+      .when('/showbets', {
+        templateUrl: 'views/showbets.html',
+        controller: 'ShowbetsCtrl',
+        controllerAs: 'showbets'
+      })
       .otherwise({
         redirectTo: '/'
       });

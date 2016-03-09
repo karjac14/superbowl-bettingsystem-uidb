@@ -1,9 +1,23 @@
-#!/usr/bin/perl5
+#!/Users/karloe/perl5
 
 use strict;
 use warnings;
-use Data::Dumper;
 
+use XML::Simple;
+use JSON::XS qw(encode_json decode_json);
+use JSON::Parse;
+use Dancer;
+use Dancer::Plugin::RequireSSL;
+
+require_ssl();
+# use Dancer::Response;
+# use Dancer::Plugin::CORS;
+
+# use JSON;
+# use XML::XML2JSON;
+# use Google::Data::JSON;
+# use LWP::Simple;
+# use Data::Dumper;
 
 
 #Database
@@ -16,173 +30,95 @@ my @bets = ({"team" => 1, "bet" => 200, "controlno" => "ABCD1234"},
             {"team" => 2, "bet" => 200, "controlno" => "ABCD1232"},
             {"team" => 1, "bet" => 100, "controlno" => "ABCD123B"});
 
+my $game_url = "../data/game-info.xml";
+my $bets_url = "../data/game-bets.xml";
 
 
 
 
+sub convertXMLtoJSON {
+  # Create a XML Simple object, keeping the root tag.
+  my ($raw) = @_;
+  my $xml = new XML::Simple(KeepRoot => 1);
 
+  # Load-in the xml file in object
+  my $dataXML = $xml->XMLin($raw);
 
-sub back {
-  print("\n\nPress 'Enter' to go back main menu\n\n");
-  my $back = <STDIN>;
-  if ($back =~ /\S\s/ || $back =~ /\n/){
-  &start;
-  }
+  # convert xml object to json.
+  my $json = encode_json($dataXML);
+
+  return $json;
 }
 
-sub betfactors {
-  my $team1bets;
-  my $team2bets;
-  foreach my $x (0..$#bets) {
-    if ( $bets[$x]{"team"} eq 1 ){
-      $team1bets += $bets[$x]{"bet"};
-    }
-    elsif ( $bets[$x]{"team"} eq 2 ){
-      $team2bets += $bets[$x]{"bet"};
-    }
-  }
-  return ($team2bets/$team1bets,$team1bets/$team2bets);
+sub convertJSONtoXML {
+  # Create a XML Simple object, keeping the root tag.
+  my ($raw) = @_;
+  my $xml = new XML::Simple(KeepRoot => 1);
+
+  # Load-in the xml file in object
+  my $dataXML = $xml->XMLin($raw);
+
+  # convert xml object to json.
+  my $json = encode_json($dataXML);
+
+  return $json;
 }
 
-
-sub seebets {
-  my @factors = betfactors;
-  my $potential_winning1 = $factors[0] * 100;
-  my $potential_winning2 = $factors[1] * 100;
-
-  print("The betting period is on going...\n");
-  print("Someone who had bet for $team1 with amount of \$100 will have a potential winning of \$" ); printf("%.2f", $potential_winning1);
-  print("\nSomeone who had bet for $team2 with amount of \$100 will have a potential winning of \$" ); printf("%.2f", $potential_winning2);
-  print("\nAs of the moment there are ", $#bets + 1, " bets confirmed.\n");
-  print("Winnings may vary as the betting period goes on. Good Luck!\n\n");
-  print("Press 'Enter' to go back main menu\n\n");
-  my $back = <STDIN>;
-  if ($back =~ /\S\s/ || $back =~ /\n/){
-    &start;
-  }
+sub convertJSONtoHASH {
+  my ($raw) = @_;
+  return parse_json ($raw);
 }
 
 
-
-sub show {
-  print("\n\n  Team           |  Control no.       |  Bet      |  Winning*  |");
-  for my $href (@bets) {
-    my @factors = &betfactors;
-    my $winning;
-    my $tn = $href->{"team"};
-    if ($tn eq '1'){
-      $tn = substr $team1, 0, 12;
-      $winning = $href->{"bet"} * $factors[0];
-    } elsif ($tn eq '2') {
-      $tn = substr $team2, 0, 12;
-      $winning = $href->{"bet"} * $factors[1];
-    }
-    print("\n  $tn   |  $href->{\"controlno\"}          |  \$ $href->{\"bet\"}    |  \$ "); printf("%.2f", $winning);
-    print("  |");
-  }
-  print("\n\n   *winning amount may vary as betting period continues");
-  return;
+sub getgame {
+  return &convertXMLtoJSON($game_url);
 }
 
-sub admin {
-  print("Enter admin password:\n");
-  my $pw = <STDIN>;
-  chomp $pw;
-  if ($pw eq "passme"){
-    print "\033[2J";   #clear the screen
-    print "\033[0;0H"; #jump to 0,0
-    &show;
-    &back;
-  } else {
-    &start;
-  }
+sub getbets {
+  return &convertXMLtoJSON($bets_url);
 }
 
-sub confirmbet {
+sub newbet {
+  my ($new_bet) = @_;
+  my $newbet_hash = &convertJSONtoHASH($new_bet);
 
-  #confirm bets by getting last entry in DB
-  #my $l = $#bets;
-  my @factors = &betfactors;
-  my $winning;
-  my $confirmteam;
-
-  if ($bets[-1]{"team"} eq 1){
-    $winning = $bets[-1]{"bet"} * $factors[0];
-    $confirmteam = $team1;
-  } elsif ($bets[-1]{"team"} eq 2){
-    $winning = $bets[-1]{"bet"} * $factors[1];
-    $confirmteam = $team2;
-  }
-
-  print("Thank you for betting!\n",
-        "You bet for $confirmteam with amount of $ @$bets[-1]{\"bet\"}\n",
-        "Your potential winning will be: \$"); printf("%.2f", $winning);
-  print("\nYour reference number is $bets[-1]{\"controlno\"}\n",
-        "Good Luck!\n");
-  &back;
-}
-
-sub recordbet {
-  my ($choiceteam, $betamount) = @_;
   #generate unique control number
   my @chr = ('0' ..'9', 'A' .. 'Z');
   my $controlno = join ('', map $chr[rand @chr], 1 .. 8);
-  push @bets, {team => $choiceteam, bet => $betamount, controlno => $controlno};
-  #bet saved on DB
-  &confirmbet;
+
+  #TODO: append new bet to XML
 }
 
-sub getbet {
-  print "Which team do you want to bet for?\n";
-  print "[1] $team1\n[2] $team2\n";
-  my $choiceteam = <STDIN>;
-  chomp $choiceteam;
 
-  print "How much you want to bet?\n";
-  print "\$";
-  my $betamount = <STDIN>;
-  chomp $betamount;
-  print "\n";
-  if (($choiceteam eq 1 || $choiceteam eq 2) && ($betamount*1 eq $betamount)) {
-    &recordbet($choiceteam, $betamount);
-  } else {
-    print "invalid team choice or bet amount";
-    &back;
-  }
-  print "############################################\n\n";
-}
+#listeners
 
-sub start {
-  print "\033[2J";   #clear the screen
-  print "\033[0;0H"; #jump to 0,0
+get '/game' => sub {
+    header 'Access-Control-Allow-Origin' => '*';
+    my $game = &getgame();
+    return $game;
+};
 
-  print("Welcome to Betting System for\n",
-          "$event\n",
-          "$date\n",
-          "$team1 vs. $team2\n\n");
 
-  print("Choose what to do:\n",
-          "[1] Place a Bet\n",
-          "[2] See Betting Status\n\n",
-          "[3] Admin\n");
-  my $choice = <STDIN>;
-  chomp $choice;
-  print "\n";
-  print "############################################\n\n";
+get '/bets' => sub {
+    header 'Access-Control-Allow-Origin' => '*';
+    my $bets = &getbets();
+    return $bets;
+};
 
-  if ($choice eq 1) {
-    &getbet;
-  }
-  elsif ($choice eq 2){
-    &seebets;
-  }
-  elsif ($choice eq 3){
-    &admin;
-  }
-  else {
-    print "invalid choice";
-    back;
-  }
-}
+post '/newbet' => sub {
+    header 'Access-Control-Allow-Origin' => '*';
+    my $newbet_json = decode_json (request->body);
+    my $newbet = &newbet($newbet_json);
+    #convert json to hash
+    #create control number and process
+    #add (push) json to db
 
-start;
+    # &print($p);
+};
+
+# whew... preflight check by chrome need to fulfill.
+options '/newbet' => sub {
+    header 'Access-Control-Allow-Origin' => '*';
+    header 'Access-Control-Allow-Headers' => 'Content-Type' => 'text/plain';
+};
+dance;

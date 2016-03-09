@@ -89,3 +89,27 @@ body {
     border-bottom: 0;
   }
 }
+
+// Custom by @karjac14
+
+.team-avatar-main {
+  width: 100px;
+
+}
+
+.team-logo {
+  width: 100%;
+  display: block;
+}
+
+label, input {
+  display: inline-block;
+
+}
+label {
+  border: 2px solid blue;
+}
+
+input#team1, input#team2 {
+  float: right;
+}
