@@ -44,7 +44,7 @@ sub convertXMLtoJSON {
   # Load-in the xml file in object
   my $dataXML = $xml->XMLin($raw);
 
-  # convert xml object in json.
+  # convert xml object to json.
   my $json = encode_json($dataXML);
 
   return $json;
@@ -58,10 +58,15 @@ sub convertJSONtoXML {
   # Load-in the xml file in object
   my $dataXML = $xml->XMLin($raw);
 
-  # convert xml object in json.
+  # convert xml object to json.
   my $json = encode_json($dataXML);
 
   return $json;
+}
+
+sub convertJSONtoHASH {
+  my ($raw) = @_;
+  return parse_json ($raw);
 }
 
 
@@ -71,6 +76,17 @@ sub getgame {
 
 sub getbets {
   return &convertXMLtoJSON($bets_url);
+}
+
+sub newbet {
+  my ($new_bet) = @_;
+  my $newbet_hash = &convertJSONtoHASH($new_bet);
+
+  #generate unique control number
+  my @chr = ('0' ..'9', 'A' .. 'Z');
+  my $controlno = join ('', map $chr[rand @chr], 1 .. 8);
+
+  #TODO: append new bet to XML
 }
 
 
@@ -91,12 +107,12 @@ get '/bets' => sub {
 
 post '/newbet' => sub {
     header 'Access-Control-Allow-Origin' => '*';
-    my $json = request->body;
-    my $p = decode_json $json;
+    my $newbet_json = decode_json (request->body);
+    my $newbet = &newbet($newbet_json);
     #convert json to hash
     #create control number and process
     #add (push) json to db
-    return $p;
+
     # &print($p);
 };
 
