@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use XML::Simple;
-use XML::LibXML;
+
 use JSON::XS qw(encode_json decode_json);
 use JSON::Parse ':all';
 use Dancer;
@@ -14,14 +14,7 @@ use Test::Simple tests => 2;
 use Data::Dumper;
 
 require_ssl();
-# use Dancer::Response;
-# use Dancer::Plugin::CORS;
 
-# use JSON;
-# use XML::XML2JSON;
-# use Google::Data::JSON;
-# use LWP::Simple;
-# use Data::Dumper;
 
 
 #Database
@@ -108,14 +101,14 @@ sub newbet {
 
 get '/game' => sub {
     header 'Access-Control-Allow-Origin' => '*';
-    my $game = &getgame();
+    my $game = getgame;
     return $game;
 };
 
 
 get '/bets' => sub {
     header 'Access-Control-Allow-Origin' => '*';
-    my $bets = &getbets();
+    my $bets = getbets;
     return $bets;
 };
 

@@ -15,7 +15,8 @@ angular.module('bettingsystemApp')
     $scope.bets = {};
     $http.get(BASE_URL + '/bets')
       .then(function(response){
-        $scope.bets = response.data.bets.bet;
-        console.log($scope.bets);
+        console.log(response);
+        $scope.bets = response.data;
+
       });
   });
