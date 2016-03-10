@@ -38,7 +38,7 @@ my $game_url = "../data/game-info.xml";
 my $bets_url = "../data/game-bets.xml";
 
 
-
+#Converters (XML,JSON,HASH)
 
 sub convertXMLtoJSON {
   # Create a XML Simple object, keeping the root tag.
@@ -74,56 +74,33 @@ sub convertJSONtoHASH {
 }
 
 
+
 sub getgame {
   return &convertXMLtoJSON($game_url);
 }
 
 sub getbets {
-  return &convertXMLtoJSON($bets_url);
+
+  my $json_str = encode_json(\@bets);
+  return $json_str;
+
+  #for use later xml to json
+  # return &convertXMLtoJSON($bets_url);
 }
 
 sub newbet {
   my ($new_bet) = @_;
   my $newbet_ref = &convertJSONtoHASH($new_bet);
-  my %newbet_hash = %{ $newbet };
+  my %newbet_hash = %{ $newbet_ref };
 
   #generate unique control number
   my @chr = ('0' ..'9', 'A' .. 'Z');
   my $controlno = join ('', map $chr[rand @chr], 1 .. 8);
 
-  #TODO: append new bet to XML
+  push @bets, {team => $newbet_hash{team}, bet => $newbet_hash{betAmount}, controlno => $controlno};
 
-  my $parser = XML::LibXML->new();
-  my $bets_details = $parser->parse_file($bets_url) or die;
-
-  my $bet  = $bets_details->findnodes("bets")->[0];
-
-  my $node = XML::LibXML::Element->new("bet");
-
-  my $t = XML::LibXML::Element->new("team");
-  my $tn = XML::LibXML::Text->new($newbet_hash{team});
-  $t->addChild($tn);
-
-  my $a = XML::LibXML::Element->new("amount");
-  my $an = XML::LibXML::Text->new($newbet_hash{amount});
-  $a->addChild($an);
-
-  my $c = XML::LibXML::Element->new("controlno");
-  my $cn = XML::LibXML::Text->new($controlno);
-  $c->addChild($cn);
-
-  $node->addChild($t);
-  $node->addChild($a);
-  $node->addChild($c);
-
-  $bet->addChild($node);
-
-  open(my $fh, '>', $bets_url);
-  print $fh $bet;
-  close $fh;
-
-
-
+  my $json_str = encode_json(\@bets);
+  return $json_str;
 }
 
 
@@ -146,8 +123,8 @@ post '/newbet' => sub {
     header 'Access-Control-Allow-Origin' => '*';
     my $newbet_json = request->body;
     # my $newbet = &
-    newbet($newbet_json);
-    return $newbet_json;
+    my $allbet = newbet($newbet_json);
+    return $allbet;
     # &print($p);
 };
 
